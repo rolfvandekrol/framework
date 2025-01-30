@@ -10,11 +10,13 @@ use Illuminate\Contracts\Validation\ValidatorAwareRule;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Traits\Conditionable;
+use Illuminate\Validation\Concerns\HasDataAwareness;
 use InvalidArgumentException;
 
 class Password implements Rule, DataAwareRule, ValidatorAwareRule
 {
-    use Conditionable;
+    use Conditionable,
+        HasDataAwareness;
 
     /**
      * The validator performing the validation.
@@ -22,13 +24,6 @@ class Password implements Rule, DataAwareRule, ValidatorAwareRule
      * @var \Illuminate\Contracts\Validation\Validator
      */
     protected $validator;
-
-    /**
-     * The data under validation.
-     *
-     * @var array
-     */
-    protected $data;
 
     /**
      * The minimum size of the password.
@@ -182,19 +177,6 @@ class Password implements Rule, DataAwareRule, ValidatorAwareRule
     public function setValidator($validator)
     {
         $this->validator = $validator;
-
-        return $this;
-    }
-
-    /**
-     * Set the data under validation.
-     *
-     * @param  array  $data
-     * @return $this
-     */
-    public function setData($data)
-    {
-        $this->data = $data;
 
         return $this;
     }

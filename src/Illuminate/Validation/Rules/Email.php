@@ -9,11 +9,14 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Traits\Conditionable;
 use Illuminate\Support\Traits\Macroable;
+use Illuminate\Validation\Concerns\HasDataAwareness;
 use InvalidArgumentException;
 
 class Email implements Rule, DataAwareRule, ValidatorAwareRule
 {
-    use Conditionable, Macroable;
+    use Conditionable,
+        Macroable,
+        HasDataAwareness;
 
     public bool $validateMxRecord = false;
     public bool $preventSpoofing = false;
@@ -28,13 +31,6 @@ class Email implements Rule, DataAwareRule, ValidatorAwareRule
      * @var \Illuminate\Validation\Validator
      */
     protected $validator;
-
-    /**
-     * The data under validation.
-     *
-     * @var array
-     */
-    protected $data;
 
     /**
      * An array of custom rules that will be merged into the validation rules.
@@ -191,7 +187,7 @@ class Email implements Rule, DataAwareRule, ValidatorAwareRule
         }
 
         $validator = Validator::make(
-            $this->data,
+            $this->getData(),
             [$attribute => $this->buildValidationRules()],
             $this->validator->customMessages,
             $this->validator->customAttributes
@@ -267,19 +263,6 @@ class Email implements Rule, DataAwareRule, ValidatorAwareRule
     public function setValidator($validator)
     {
         $this->validator = $validator;
-
-        return $this;
-    }
-
-    /**
-     * Set the current data under validation.
-     *
-     * @param  array  $data
-     * @return $this
-     */
-    public function setData($data)
-    {
-        $this->data = $data;
 
         return $this;
     }
